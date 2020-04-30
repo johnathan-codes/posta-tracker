@@ -42,8 +42,8 @@ export default class App extends Component {
     return (
       <div className="App" style={{textAlign: "-webkit-center"}}>
         <form onSubmit={this.addPackageNumber}>
-          <input type="text" placeholder="Číslo zásielky" id="input" value={this.state.input} onChange={this.inputOnChange} />
-          <button>Pridať číslo balíka</button>
+          <textarea placeholder="Čísla zásielok oddelené čiarkou" id="input" value={this.state.input} onChange={this.inputOnChange} />
+          <button>Pridať</button>
         </form>
 
         {parcelsToFind.map(parcelToFind => { 
@@ -66,7 +66,6 @@ export default class App extends Component {
                 ? <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
                 : <td>Parcela nenájdená</td>
               }
-
             </tr>
           })}
           </tbody> 
