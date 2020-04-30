@@ -3,51 +3,65 @@ import './App.css';
 
 export default class App extends Component {
   state = {
-    parcelsToFind : [],
+    parcelsToFind: [],
     parcelsData: [],
-    input: ""
-  }
+    input: '',
+    errorLength: ''
+  };
 
-  inputOnChange = e => {
-    this.setState({ [e.target.id]: e.target.value})
-  }
+  inputOnChange = (e) => {
+    this.setState({ [e.target.id]: e.target.value });
+  };
 
-  addPackageNumber = e => {
+  addPackageNumber = (e) => {
     e.preventDefault();
-    let parcelsArray = this.state.parcelsToFind;
-    let parseInput = this.state.input;
-    parseInput = parseInput.split(',');
-    parseInput.forEach(elem => {
-      parcelsArray.push(elem)
-    })
-    this.setState({
-      parcelToFind: parcelsArray,
-      input: ''
-    })
-  }
+    let { input, parcelsToFind } = this.state;
+
+    let parcelCount = input.split(',');
+    parcelCount = parcelCount.length;
+    console.log('App -> addPackageNumber -> parcelCount', parcelCount)
+
+    if (this.state.input !== '' && input.replace(',', '').length === parcelCount * 13) {
+      let parcelsArray = parcelsToFind;
+      let parseInput = input;
+      parseInput = parseInput.split(',');
+      parseInput.forEach((elem) => {
+        parcelsArray.push(elem);
+      });
+      this.setState({
+        parcelToFind: parcelsArray,
+        input: '',
+        errorLength: ''
+      });
+    } else {
+      this.setState({
+        errorLength: 'Číslo zásielky má 13 znakov'
+      })
+    }
+  };
 
   getPostaResponse = () => {
     let urlString = 'https://api.posta.sk/private/search?q=';
-    this.state.parcelsToFind.forEach(element => {
-      urlString += element + ','
-    })
-    urlString += '&m=tnt'
+    this.state.parcelsToFind.forEach((element) => {
+      urlString += element + ',';
+    });
+    urlString += '&m=tnt';
     fetch(urlString)
-    .then(data => data.json())
-    .then(response => {
-      this.setState({
-        parcelsData: response.parcels
-      })
-      localStorage.setItem('parcels', this.state.parcelsToFind);
-    })
-  }
+      .then((data) => data.json())
+      .then((response) => {
+        this.setState({
+          parcelsData: response.parcels,
+        });
+        localStorage.setItem('parcels', this.state.parcelsToFind);
+      });
+  };
 
   deleteParcelsToFind = () => {
     this.setState({
-      parcelsToFind: []
-    })
-    localStorage.removeItem('parcels')
-  }
+      parcelsToFind: [],
+    });
+    localStorage.removeItem('parcels');
+  };
 
   componentDidMount = () => {
     let storageString = localStorage.getItem('parcels');
@@ -55,32 +69,33 @@ export default class App extends Component {
     storageString = storageString === null ? [] : storageString.split(',');
     let parcelsArray = [];
 
-    storageString.forEach(elem => {
-      parcelsArray.push(elem)
-    })
+    storageString.forEach((elem) => {
+      parcelsArray.push(elem);
+    });
 
     this.setState({
-      parcelsToFind: parcelsArray
-    })
-  }
+      parcelsToFind: parcelsArray,
+    });
+  };
 
   render() {
-    const { parcelsToFind, parcelsData } = this.state
+    const { parcelsToFind, parcelsData, errorLength } = this.state;
     return (
-      <div className="App" style={{textAlign: "-webkit-center"}}>
+      <div className="App" style={{ textAlign: '-webkit-center' }}>
         <form onSubmit={this.addPackageNumber}>
-          <textarea 
-            placeholder="Čísla zásielok oddelené čiarkou" 
-            id="input" 
-            value={this.state.input} 
-            onChange={this.inputOnChange} 
-            style={{maxWidth: "500px"}}
+          {errorLength && <p style={{color: 'red'}}>{errorLength}</p>}
+          <textarea
+            placeholder="Čísla zásielok oddelené čiarkou"
+            id="input"
+            value={this.state.input}
+            onChange={this.inputOnChange}
+            style={{ maxWidth: '500px' }}
           />
           <button>Pridať</button>
         </form>
 
-        {parcelsToFind.map(parcelToFind => { 
-          return <p key={parcelToFind}>{parcelToFind}</p>
+        {parcelsToFind.map((parcelToFind) => {
+          return <p key={parcelToFind}>{parcelToFind}</p>;
         })}
         <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
         <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
@@ -92,16 +107,19 @@ export default class App extends Component {
             </tr>
           </thead>
           <tbody>
-          {parcelsData.map(parcel => {
-            return <tr key={parcel.number}>
-              <td>{parcel.number}</td>
-              {parcel.events.length 
-                ? <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
-                : <td>Parcela nenájdená</td>
-              }
-            </tr>
-          })}
-          </tbody> 
+            {parcelsData.map((parcel) => {
+              return (
+                <tr key={parcel.number}>
+                  <td>{parcel.number}</td>
+                  {parcel.events.length ? (
+                    <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
+                  ) : (
+                    <td>Parcela nenájdená</td>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
     );
