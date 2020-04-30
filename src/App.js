@@ -42,7 +42,13 @@ export default class App extends Component {
     return (
       <div className="App" style={{textAlign: "-webkit-center"}}>
         <form onSubmit={this.addPackageNumber}>
-          <textarea placeholder="Čísla zásielok oddelené čiarkou" id="input" value={this.state.input} onChange={this.inputOnChange} />
+          <textarea 
+            placeholder="Čísla zásielok oddelené čiarkou" 
+            id="input" 
+            value={this.state.input} 
+            onChange={this.inputOnChange} 
+            style={{maxWidth: "500px"}}
+          />
           <button>Pridať</button>
         </form>
 
