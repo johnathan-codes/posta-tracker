@@ -15,7 +15,11 @@ export default class App extends Component {
   addPackageNumber = e => {
     e.preventDefault();
     let parcelsArray = this.state.parcelsToFind;
-    parcelsArray.push(this.state.input)
+    let parseInput = this.state.input;
+    parseInput = parseInput.split(',');
+    parseInput.forEach(elem => {
+      parcelsArray.push(elem)
+    })
     this.setState({
       parcelToFind: parcelsArray,
       input: ''
@@ -34,6 +38,29 @@ export default class App extends Component {
       this.setState({
         parcelsData: response.parcels
       })
+      localStorage.setItem('parcels', this.state.parcelsToFind);
+    })
+  }
+
+  deleteParcelsToFind = () => {
+    this.setState({
+      parcelsToFind: []
+    })
+    localStorage.removeItem('parcels')
+  }
+
+  componentDidMount = () => {
+    let storageString = localStorage.getItem('parcels');
+
+    storageString = storageString === null ? [] : storageString.split(',');
+    let parcelsArray = [];
+
+    storageString.forEach(elem => {
+      parcelsArray.push(elem)
+    })
+
+    this.setState({
+      parcelsToFind: parcelsArray
     })
   }
 
@@ -55,7 +82,7 @@ export default class App extends Component {
         {parcelsToFind.map(parcelToFind => { 
           return <p key={parcelToFind}>{parcelToFind}</p>
         })}
-
+        <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
         <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
         <table>
           <thead>
