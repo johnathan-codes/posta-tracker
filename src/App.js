@@ -17,11 +17,7 @@ export default class App extends Component {
     e.preventDefault();
     let { input, parcelsToFind } = this.state;
 
-    let parcelCount = input.split(',');
-    parcelCount = parcelCount.length;
-    console.log('App -> addPackageNumber -> parcelCount', parcelCount)
-
-    if (this.state.input !== '' && input.replace(',', '').length === parcelCount * 13) {
+    if (this.state.input !== '') {
       let parcelsArray = parcelsToFind;
       let parseInput = input;
       parseInput = parseInput.split(',');
@@ -95,7 +91,7 @@ export default class App extends Component {
         </form>
 
         {parcelsToFind.map((parcelToFind) => {
-          return <p key={parcelToFind}>{parcelToFind}</p>;
+          return <p key={parcelToFind + Math.floor(Math.random() * 100)}>{parcelToFind}</p>;
         })}
         <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
         <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
