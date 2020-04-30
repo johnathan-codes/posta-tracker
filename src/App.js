@@ -1,26 +1,77 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends Component {
+  state = {
+    parcelsToFind : [],
+    parcelsData: [],
+    input: ""
+  }
 
-export default App;
+  inputOnChange = e => {
+    this.setState({ [e.target.id]: e.target.value})
+  }
+
+  addPackageNumber = e => {
+    e.preventDefault();
+    let parcelsArray = this.state.parcelsToFind;
+    parcelsArray.push(this.state.input)
+    this.setState({
+      parcelToFind: parcelsArray,
+      input: ''
+    })
+  }
+
+  getPostaResponse = () => {
+    let urlString = 'https://api.posta.sk/private/search?q=';
+    this.state.parcelsToFind.forEach(element => {
+      urlString += element + ','
+    })
+    urlString += '&m=tnt'
+    fetch(urlString)
+    .then(data => data.json())
+    .then(response => {
+      this.setState({
+        parcelsData: response.parcels
+      })
+    })
+  }
+
+  render() {
+    const { parcelsToFind, parcelsData } = this.state
+    return (
+      <div className="App" style={{textAlign: "-webkit-center"}}>
+        <form onSubmit={this.addPackageNumber}>
+          <input type="text" placeholder="Číslo zásielky" id="input" value={this.state.input} onChange={this.inputOnChange} />
+          <button>Pridať číslo balíka</button>
+        </form>
+
+        {parcelsToFind.map(parcelToFind => { 
+          return <p key={parcelToFind}>{parcelToFind}</p>
+        })}
+
+        <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
+        <table>
+          <thead>
+            <tr>
+              <td>Číslo Zásielky</td>
+              <td>Aktuálny stav</td>
+            </tr>
+          </thead>
+          <tbody>
+          {parcelsData.map(parcel => {
+            return <tr key={parcel.number}>
+              <td>{parcel.number}</td>
+              {parcel.events.length 
+                ? <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
+                : <td>Parcela nenájdená</td>
+              }
+
+            </tr>
+          })}
+          </tbody> 
+        </table>
+      </div>
+    );
+  }
+}
