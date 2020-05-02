@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import PackageResults from './components/packageResults';
 
 export default class App extends Component {
   state = {
@@ -113,34 +114,8 @@ export default class App extends Component {
             })}
           </tbody>
         </table>
-        {parcelsToFind.length > 0 && (
-          <div>
-            <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
-            <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
-            <table>
-              <thead>
-                <tr>
-                  <td>Číslo Zásielky</td>
-                  <td>Aktuálny stav</td>
-                </tr>
-              </thead>
-              <tbody>
-                {parcelsData.map((parcel) => {
-                  return (
-                    <tr key={parcel.number}>
-                      <td>{parcel.number}</td>
-                      {parcel.events.length ? (
-                        <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
-                      ) : (
-                        <td>Parcela nenájdená</td>
-                      )}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <PackageResults parcelsData={parcelsData} parcelsToFind={parcelsToFind} deleteParcelsToFind={this.deleteParcelsToFind} getPostaResponse={this.getPostaResponse} />
+
       </div>
     );
   }
