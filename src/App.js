@@ -97,8 +97,8 @@ export default class App extends Component {
     return (
       <div className="App" style={{ textAlign: '-webkit-center' }}>
         <h2>Pošta Tracker</h2>
-        <Badge onClick={this.toggle} href="#" color="info">
-          {checked ? 'Pridať jednotlivo' : 'Pridať viacero'}
+        <Badge onClick={this.toggle} href="#" color="info" style={{ marginBottom: "20px"}}>
+          {checked ? 'Zadávať po jednom' : 'Zadať viacero'}
         </Badge>
         <Form onSubmit={this.addPackageNumber}>
           {errorLength && <Alert color="danger">{errorLength}</Alert>}
