@@ -10,3 +10,6 @@ Do tejto appky zadáš čísla balíkov a klikneš na trackovanie. Zobrazí ti z
 - cd posta-tracker
 - npm run install
 - npm run start
+
+## Demo
+[Demo](https://dev.onemandevz.pro/)
