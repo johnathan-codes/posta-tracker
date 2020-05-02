@@ -6,7 +6,7 @@ export default class App extends Component {
     parcelsToFind: [],
     parcelsData: [],
     input: '',
-    errorLength: ''
+    errorLength: '',
   };
 
   inputOnChange = (e) => {
@@ -27,12 +27,12 @@ export default class App extends Component {
       this.setState({
         parcelToFind: parcelsArray,
         input: '',
-        errorLength: ''
+        errorLength: '',
       });
     } else {
       this.setState({
-        errorLength: 'Číslo zásielky má 13 znakov'
-      })
+        errorLength: 'Nezadali ste číslo zásielky',
+      });
     }
   };
 
@@ -59,6 +59,14 @@ export default class App extends Component {
     localStorage.removeItem('parcels');
   };
 
+  removeOne = (index) => {
+    let parcelsArray = this.state.parcelsToFind;
+    parcelsArray.splice(index, 1);
+    this.setState({
+      parcelsToFind: parcelsArray,
+    });
+  };
+
   componentDidMount = () => {
     let storageString = localStorage.getItem('parcels');
 
@@ -79,44 +87,60 @@ export default class App extends Component {
     return (
       <div className="App" style={{ textAlign: '-webkit-center' }}>
         <form onSubmit={this.addPackageNumber}>
-          {errorLength && <p style={{color: 'red'}}>{errorLength}</p>}
+          {errorLength && <p className="error">{errorLength}</p>}
           <textarea
             placeholder="Čísla zásielok oddelené čiarkou"
             id="input"
             value={this.state.input}
             onChange={this.inputOnChange}
-            style={{ maxWidth: '500px' }}
           />
           <button>Pridať</button>
         </form>
 
-        {parcelsToFind.map((parcelToFind) => {
-          return <p key={parcelToFind + Math.floor(Math.random() * 100)}>{parcelToFind}</p>;
-        })}
-        <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
-        <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
         <table>
-          <thead>
-            <tr>
-              <td>Číslo Zásielky</td>
-              <td>Aktuálny stav</td>
-            </tr>
-          </thead>
           <tbody>
-            {parcelsData.map((parcel) => {
+            {parcelsToFind.map((parcelToFind, index) => {
               return (
-                <tr key={parcel.number}>
-                  <td>{parcel.number}</td>
-                  {parcel.events.length ? (
-                    <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
-                  ) : (
-                    <td>Parcela nenájdená</td>
-                  )}
+                <tr key={index}>
+                  <td>{parcelToFind}</td>
+                  <td>
+                    <button color="danger" onClick={this.removeOne.bind(this, index)}>
+                      Vymazať
+                    </button>
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        {parcelsToFind.length > 0 && (
+          <div>
+            <button onClick={this.deleteParcelsToFind}>Vymazať zásielky</button>
+            <button onClick={this.getPostaResponse}>Vyhľadať zásielky</button>
+            <table>
+              <thead>
+                <tr>
+                  <td>Číslo Zásielky</td>
+                  <td>Aktuálny stav</td>
+                </tr>
+              </thead>
+              <tbody>
+                {parcelsData.map((parcel) => {
+                  return (
+                    <tr key={parcel.number}>
+                      <td>{parcel.number}</td>
+                      {parcel.events.length ? (
+                        <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
+                      ) : (
+                        <td>Parcela nenájdená</td>
+                      )}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     );
   }

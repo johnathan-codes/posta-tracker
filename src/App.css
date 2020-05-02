@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  background-color: black;
 }
 
 .App-logo {
@@ -26,6 +27,17 @@
 
 .App-link {
   color: #61dafb;
+}
+
+textarea {
+  max-width: 500px;
+  max-height: 500px;
+  width: 50%;
+  height: 100%;
+}
+
+.error {
+  color: red;
 }
 
 @keyframes App-logo-spin {
