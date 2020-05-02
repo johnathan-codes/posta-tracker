@@ -8,7 +8,7 @@ const PackageResults = ({ parcelsToFind, parcelsData, deleteParcelsToFind, getPo
         <div>
           <Button onClick={deleteParcelsToFind} color="danger" size='sm'>Vymazať zásielky</Button>
           <Button onClick={getPostaResponse} color="primary" size='sm'>Vyhľadať zásielky</Button>
-          <Table bordered size="sm" responsive style={{ textAlign: "center", maxWidth: "50%"}}>
+          <Table bordered size="sm" responsive style={{ textAlign: "center", maxWidth: "60%"}}>
             <thead>
               <tr>
                 <th>Číslo Zásielky</th>
@@ -17,14 +17,17 @@ const PackageResults = ({ parcelsToFind, parcelsData, deleteParcelsToFind, getPo
             </thead>
             <tbody>
               {parcelsData.map((parcel) => {
+                let posta = "Zásielka nenájdená"
+                if(parcel.events.length > 0 && parcel.events[parcel.events.length - 1].post !== undefined) {
+                  posta = "Zásielka uložená na pošte: " + parcel.events[parcel.events.length - 1].post.name
+                } else if (parcel.events.length > 0) {
+                  posta = parcel.events[parcel.events.length - 1].desc.sk
+                }
+
                 return (
                   <tr key={parcel.number}>
                     <td>{parcel.number}</td>
-                    {parcel.events.length ? (
-                      <td>{parcel.events[parcel.events.length - 1].desc.sk}</td>
-                    ) : (
-                      <td>Parcela nenájdená</td>
-                    )}
+                    <td>{posta}</td>
                   </tr>
                 );
               })}
