@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import PackageResults from './components/packageResults';
+import ParcelsToFind from './components/parcelsToFind'
 
 export default class App extends Component {
   state = {
@@ -99,23 +100,9 @@ export default class App extends Component {
         </form>
 
         <table>
-          <tbody>
-            {parcelsToFind.map((parcelToFind, index) => {
-              return (
-                <tr key={index}>
-                  <td>{parcelToFind}</td>
-                  <td>
-                    <button color="danger" onClick={this.removeOne.bind(this, index)}>
-                      Vymazať
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
+          <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={this.removeOne} />
         </table>
         <PackageResults parcelsData={parcelsData} parcelsToFind={parcelsToFind} deleteParcelsToFind={this.deleteParcelsToFind} getPostaResponse={this.getPostaResponse} />
-
       </div>
     );
   }
