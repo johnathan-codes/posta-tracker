@@ -1,17 +1,18 @@
 import React from 'react';
+import { Button, Table } from 'reactstrap'
 
 const PackageResults = ({ parcelsToFind, parcelsData, deleteParcelsToFind, getPostaResponse }) => {
   return (
     <div>
       {parcelsToFind.length > 0 && (
         <div>
-          <button onClick={deleteParcelsToFind}>Vymazať zásielky</button>
-          <button onClick={getPostaResponse}>Vyhľadať zásielky</button>
-          <table>
+          <Button onClick={deleteParcelsToFind} color="danger" size='sm'>Vymazať zásielky</Button>
+          <Button onClick={getPostaResponse} color="primary" size='sm'>Vyhľadať zásielky</Button>
+          <Table bordered size="sm" responsive style={{ textAlign: "center", maxWidth: "50%"}}>
             <thead>
               <tr>
-                <td>Číslo Zásielky</td>
-                <td>Aktuálny stav</td>
+                <th>Číslo Zásielky</th>
+                <th>Aktuálny stav</th>
               </tr>
             </thead>
             <tbody>
@@ -28,7 +29,7 @@ const PackageResults = ({ parcelsToFind, parcelsData, deleteParcelsToFind, getPo
                 );
               })}
             </tbody>
-          </table>
+          </Table>
         </div>
       )}
     </div>

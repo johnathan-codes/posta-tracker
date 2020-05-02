@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import PackageResults from './components/packageResults';
 import ParcelsToFind from './components/parcelsToFind'
+import { Button, Form, Table, Input } from 'reactstrap'
 
 export default class App extends Component {
   state = {
@@ -88,20 +89,23 @@ export default class App extends Component {
     const { parcelsToFind, parcelsData, errorLength } = this.state;
     return (
       <div className="App" style={{ textAlign: '-webkit-center' }}>
-        <form onSubmit={this.addPackageNumber}>
+        <h2>Pošta Tracker</h2>
+        <Form onSubmit={this.addPackageNumber}>
           {errorLength && <p className="error">{errorLength}</p>}
-          <textarea
+          <Input 
+            type="textarea"
             placeholder="Čísla zásielok oddelené čiarkou"
             id="input"
             value={this.state.input}
             onChange={this.inputOnChange}
           />
-          <button>Pridať</button>
-        </form>
-
-        <table>
+          <br/>
+          <Button color="secondary" size='sm'>Pridať</Button>
+        </Form>
+        <hr />
+        <Table size="sm" style={{textAlign: "center", maxWidth: "20%"}}>
           <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={this.removeOne} />
-        </table>
+        </Table>
         <PackageResults parcelsData={parcelsData} parcelsToFind={parcelsToFind} deleteParcelsToFind={this.deleteParcelsToFind} getPostaResponse={this.getPostaResponse} />
       </div>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Badge } from 'reactstrap'
 const ParcelsToFind = ({ parcelsToFind, removeOne }) => {
   return (
     <tbody>
@@ -8,9 +8,9 @@ const ParcelsToFind = ({ parcelsToFind, removeOne }) => {
           <tr key={index}>
             <td>{parcel}</td>
             <td>
-              <button color="danger" onClick={() => removeOne(index)}>
-                Vymazať
-              </button>
+              <Badge color="danger" size="sm" onClick={() => removeOne(index)} href="#">
+                X
+              </Badge>
             </td>
           </tr>
         );
