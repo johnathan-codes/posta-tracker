@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import PackageResults from './components/packageResults';
 import ParcelsToFind from './components/parcelsToFind';
-import { Button, Form, Table, Input, Alert, Badge } from 'reactstrap';
+import { Button, Form, Table, Input, Alert } from 'reactstrap';
 export default class App extends Component {
   state = {
     parcelsToFind: [],
     parcelsData: [],
     input: '',
-    errorLength: '',
-    checked: false,
+    errorLength: ''
   };
 
   inputOnChange = (e) => {
@@ -85,40 +84,21 @@ export default class App extends Component {
     });
   };
 
-  toggle = () => {
-    this.setState({
-      checked: !this.state.checked,
-    });
-  };
-
   render() {
     const { parcelsToFind, parcelsData, errorLength, checked } = this.state;
     console.log('App -> render -> checked', checked);
     return (
       <div className="App">
         <h2>Pošta Tracker</h2>
-        <Badge onClick={this.toggle} href="#" color="info" style={{ marginBottom: "20px"}}>
-          {checked ? 'Zadávať po jednom' : 'Zadať viacero'}
-        </Badge>
         <Form onSubmit={this.addPackageNumber}>
           {errorLength && <Alert color="danger">{errorLength}</Alert>}
-          {checked ? (
-            <Input
-              type="textarea"
-              placeholder="Čísla zásielok oddelené čiarkou"
-              id="input"
-              value={this.state.input}
-              onChange={this.inputOnChange}
-            />
-          ) : (
-            <Input
-              type="text"
-              placeholder="Číslo zásielky"
-              id="input"
-              value={this.state.input}
-              onChange={this.inputOnChange}
-            />
-          )}
+          <Input
+            type="textarea"
+            placeholder="Čísla zásielok oddelené čiarkou"
+            id="input"
+            value={this.state.input}
+            onChange={this.inputOnChange}
+          />
           <br />
           <Button color="success" size="sm">
             Pridať
