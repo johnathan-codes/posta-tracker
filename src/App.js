@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import PackageResults from './components/packageResults';
 import ParcelsToFind from './components/parcelsToFind'
-import { Button, Form, Table, Input } from 'reactstrap'
-
+import { Button, Form, Table, Input, Alert } from 'reactstrap'
 export default class App extends Component {
   state = {
     parcelsToFind: [],
@@ -86,12 +85,12 @@ export default class App extends Component {
   };
 
   render() {
-    const { parcelsToFind, parcelsData, errorLength } = this.state;
+    const { parcelsToFind, parcelsData, errorLength, textareaInput } = this.state;
     return (
       <div className="App" style={{ textAlign: '-webkit-center' }}>
         <h2>Pošta Tracker</h2>
         <Form onSubmit={this.addPackageNumber}>
-          {errorLength && <p className="error">{errorLength}</p>}
+          {errorLength && <Alert color="danger">{errorLength}</Alert>}
           <Input 
             type="textarea"
             placeholder="Čísla zásielok oddelené čiarkou"
