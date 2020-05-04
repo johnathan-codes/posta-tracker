@@ -57,6 +57,7 @@ export default class App extends Component {
   deleteParcelsToFind = () => {
     this.setState({
       parcelsToFind: [],
+      parcelsData: []
     });
     localStorage.removeItem('parcels');
   };
