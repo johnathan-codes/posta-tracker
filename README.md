@@ -13,3 +13,17 @@ Do tejto appky zadáš čísla balíkov a klikneš na trackovanie. Zobrazí ti z
 
 ## Demo
 [Demo](https://dev.onemandevz.pro/)
+
+
+## Todo
+- [ ] notifications
+  - [ ] POST Request - https://api.posta.sk/private/tnt/notif
+  - [ ] Payload 
+  ```
+  {
+    "email": "user@email.com",
+    "note": "poznamka / user note", 
+    "number": "číslo balíka / parcel number",
+    "lang": "jazyk / language"
+  }
+  ```
