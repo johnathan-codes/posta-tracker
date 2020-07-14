@@ -73,6 +73,15 @@ const App = () => {
     localStorage.removeItem('parcels')
   }
 
+  const removeOne = (parcelNumber) => {
+    let tempArray = parcelsToFind.filter((parcel) => {
+      return parcel.parcel !== parcelNumber
+    })
+
+    setParcelsToFind(tempArray)
+    if (tempArray.length === 0) setChecked(false)
+  }
+
   useEffect(() => {
     let storageString = localStorage.getItem('parcels')
 
@@ -108,8 +117,7 @@ const App = () => {
       {parcelsToFind.length > 0 && (
         <div>
           <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
-            <ParcelsToFind parcelsToFind={parcelsToFind} />
-            {/* <ParcelsToFind parcelsToFind={parcelsToFind}  /> removeOne={removeOne} */}
+            <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={removeOne} />
           </Table>
           <Button onClick={deleteParcelsToFind} color="danger" size="sm">
             Vymazať zásielky
