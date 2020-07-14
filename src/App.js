@@ -1,25 +1,23 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 import PackageResults from './components/packageResults'
 import ParcelsToFind from './components/parcelsToFind'
 import { Button, Form, Table, Input, Alert } from 'reactstrap'
-export default class App extends Component {
-  state = {
-    parcelsToFind: [],
-    parcelsData: [],
-    input: '',
-    errorLength: '',
+
+const App = () => {
+  const [parcelsToFind, setParcelsToFind] = useState([])
+  const [parcelsData, setParcelsData] = useState([])
+  const [input, setInput] = useState('')
+  const [errorLength, setErrorLength] = useState('')
+
+  const inputOnChange = (e) => {
+    setInput(e.target.value)
   }
 
-  inputOnChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value })
-  }
-
-  addPackageNumber = (e) => {
+  const addPackageNumber = (e) => {
     e.preventDefault()
-    let { input, parcelsToFind } = this.state
 
-    if (this.state.input !== '') {
+    if (input !== '') {
       let parcelsArray = parcelsToFind
       let parseInput = input
       parseInput = parseInput.split(',')
@@ -30,56 +28,44 @@ export default class App extends Component {
         }
         parcelsArray.push(newObj)
       })
-      this.setState((state) => {
-        return {
-          parcelToFind: parcelsArray,
-          input: '',
-          errorLength: '',
-        }
-      })
+
+      setParcelsToFind(parcelsArray)
+      setInput('')
+      setErrorLength('')
     } else {
-      this.setState({
-        errorLength: 'Nezadali ste číslo zásielky',
-      })
+      setErrorLength('Nezadali ste číslo zásielky')
     }
   }
 
-  getPostaResponse = () => {
+  const getPostaResponse = () => {
     let urlString = 'https://api.posta.sk/private/search?q='
-    this.state.parcelsToFind.forEach((element) => {
+    parcelsToFind.forEach((element) => {
       urlString += element.parcel + ','
     })
     urlString += '&m=tnt'
     fetch(urlString)
       .then((data) => data.json())
       .then((response) => {
-        this.setState((state) => {
-          return {
-            parcelsData: response.parcels,
-          }
-        })
+        setParcelsData(response.parcels)
 
-        localStorage.setItem('parcels', JSON.stringify(this.state.parcelsToFind))
+        localStorage.setItem('parcels', JSON.stringify(parcelsToFind))
       })
   }
 
-  deleteParcelsToFind = () => {
-    this.setState({
-      parcelsToFind: [],
-      parcelsData: [],
-    })
+  const deleteParcelsToFind = () => {
+    setParcelsToFind([])
+    setParcelsData([])
     localStorage.removeItem('parcels')
   }
 
-  removeOne = (index) => {
-    let parcelsArray = this.state.parcelsToFind
+  const removeOne = (index) => {
+    let parcelsArray = parcelsToFind
     parcelsArray.splice(index, 1)
-    this.setState({
-      parcelsToFind: parcelsArray,
-    })
+
+    setParcelsToFind(parcelsArray)
   }
 
-  componentDidMount = () => {
+  useEffect(() => {
     let storageString = localStorage.getItem('parcels')
 
     storageString = storageString === null ? [] : JSON.parse(storageString)
@@ -89,42 +75,39 @@ export default class App extends Component {
       parcelsArray.push(elem)
     })
 
-    this.setState({
-      parcelsToFind: parcelsArray,
-    })
-  }
+    setParcelsToFind(parcelsArray)
+  }, [])
 
-  render() {
-    const { parcelsToFind, parcelsData, errorLength } = this.state
-    return (
-      <div className="App">
-        <h2>Pošta Tracker</h2>
-        <Form onSubmit={this.addPackageNumber}>
-          {errorLength && <Alert color="danger">{errorLength}</Alert>}
-          <Input
-            type="textarea"
-            placeholder="Čísla zásielok oddelené čiarkou"
-            id="input"
-            value={this.state.input}
-            onChange={this.inputOnChange}
-          />
-          <br />
-          <Button color="success" size="sm">
-            Pridať
-          </Button>
-        </Form>
-        <hr />
-        <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
-          <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={this.removeOne} />
-        </Table>
-        {parcelsToFind.length > 0 && (
-          <PackageResults
-            parcelsData={parcelsData}
-            deleteParcelsToFind={this.deleteParcelsToFind}
-            getPostaResponse={this.getPostaResponse}
-          />
-        )}
-      </div>
-    )
-  }
+  return (
+    <div className="App">
+      <h2>Pošta Tracker</h2>
+      <Form onSubmit={addPackageNumber}>
+        {errorLength && <Alert color="danger">{errorLength}</Alert>}
+        <Input
+          type="textarea"
+          placeholder="Čísla zásielok oddelené čiarkou"
+          id="input"
+          value={input}
+          onChange={inputOnChange}
+        />
+        <br />
+        <Button color="success" size="sm">
+          Pridať
+        </Button>
+      </Form>
+      <hr />
+      <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
+        <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={removeOne} />
+      </Table>
+      {parcelsToFind.length > 0 && (
+        <PackageResults
+          parcelsData={parcelsData}
+          deleteParcelsToFind={deleteParcelsToFind}
+          getPostaResponse={getPostaResponse}
+        />
+      )}
+    </div>
+  )
 }
+
+export default App
