@@ -13,7 +13,7 @@ const PackageResults = ({ parcelsData }) => {
       <tbody>
         {parcelsData.map((parcel) => {
           return (
-            <tr key={parcel.parcel}>
+            <tr key={parcel.parcel + Math.random(10)}>
               <td>{parcel.parcel}</td>
               <td>{parcel.response}</td>
             </tr>

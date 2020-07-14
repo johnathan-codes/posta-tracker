@@ -6,7 +6,7 @@ const ParcelsToFind = ({ parcelsToFind, removeOne }) => {
     <tbody>
       {parcelsToFind.map((parcel, index) => {
         return (
-          <tr key={index}>
+          <tr key={index + Math.random(10)}>
             <td>{parcel.parcel}</td>
             <td>
               <Badge color="danger" size="sm" onClick={() => removeOne(parcel.parcel)} href="#">
