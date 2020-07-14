@@ -18,20 +18,16 @@ const App = () => {
     e.preventDefault()
 
     if (input !== '') {
-      let parcelsArray = parcelsToFind
       let parseInput = input
       parseInput = parseInput.split(',')
       parseInput.forEach((elem) => {
         let newObj = {
           parcel: elem,
-          id: Math.max(parcelsArray.map((s) => s.id)) + 1,
           response: '',
         }
-        parcelsArray.push(newObj)
+        setParcelsToFind((prevParcelsToFind) => [...prevParcelsToFind, newObj])
       })
 
-      console.log('addPackageNumber -> parcelsArray', parcelsArray)
-      setParcelsToFind(parcelsArray)
       setInput('')
       setErrorLength('')
     } else {
