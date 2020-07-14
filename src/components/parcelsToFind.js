@@ -1,5 +1,4 @@
 import React from 'react'
-import { Badge } from 'reactstrap'
 
 const ParcelsToFind = ({ parcelsToFind }) => {
   return (

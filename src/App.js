@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import PackageResults from './components/packageResults'
-import ParcelsToFind from './components/parcelsToFind'
+import PackageResults from './components/PackageResults'
+import ParcelsToFind from './components/ParcelsToFind'
 import { Button, Form, Table, Input, Alert } from 'reactstrap'
 
 const App = () => {
   const [parcelsToFind, setParcelsToFind] = useState([])
-  const [parcelsData, setParcelsData] = useState([])
+  const [checked, setChecked] = useState(false)
   const [input, setInput] = useState('')
   const [errorLength, setErrorLength] = useState('')
 
@@ -35,6 +35,14 @@ const App = () => {
     }
   }
 
+  const formatResponse = (item) => {
+    if (item.events.length > 0 && item.events[item.events.length - 1].post !== undefined) {
+      return 'Zásielka uložená na pošte: ' + item.events[item.events.length - 1].post.name
+    } else if (item.events.length > 0) {
+      return item.events[item.events.length - 1].desc.sk
+    } else return 'Zásielka nenájdená'
+  }
+
   const getPostaResponse = () => {
     let urlString = 'https://api.posta.sk/private/search?q='
     parcelsToFind.forEach((element) => {
@@ -44,21 +52,26 @@ const App = () => {
     fetch(urlString)
       .then((data) => data.json())
       .then((response) => {
-        setParcelsData(response.parcels)
+        let tempArray = []
+        response.parcels.forEach((item) => {
+          let temp = parcelsToFind.find((elem) => {
+            return elem.parcel === item.number
+          })
 
+          temp.response = formatResponse(item)
+          tempArray.push(temp)
+        })
+        setParcelsToFind(tempArray)
+        setChecked(true)
         localStorage.setItem('parcels', JSON.stringify(parcelsToFind))
       })
   }
 
   const deleteParcelsToFind = () => {
     setParcelsToFind([])
-    setParcelsData([])
+    setChecked(false)
     localStorage.removeItem('parcels')
   }
-
-  // const removeOne = (index) => {
-  //   setParcelsToFind((prevParcelsToFind) => [...prevParcelsToFind, parcelsToFind.splice(index, 1)])
-  // }
 
   useEffect(() => {
     let storageString = localStorage.getItem('parcels')
@@ -91,17 +104,20 @@ const App = () => {
         </Button>
       </Form>
       <hr />
-      {parcelsToFind.length >= 1 && (
+
+      {parcelsToFind.length > 0 && (
         <div>
           <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
             <ParcelsToFind parcelsToFind={parcelsToFind} />
             {/* <ParcelsToFind parcelsToFind={parcelsToFind}  /> removeOne={removeOne} */}
           </Table>
-          <PackageResults
-            parcelsData={parcelsData}
-            deleteParcelsToFind={deleteParcelsToFind}
-            getPostaResponse={getPostaResponse}
-          />
+          <Button onClick={deleteParcelsToFind} color="danger" size="sm">
+            Vymazať zásielky
+          </Button>
+          <Button onClick={getPostaResponse} color="primary" size="sm">
+            Vyhľadať zásielky
+          </Button>
+          {checked && <PackageResults parcelsData={parcelsToFind} />}
         </div>
       )}
     </div>
