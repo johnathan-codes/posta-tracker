@@ -1,93 +1,101 @@
-import React, { Component } from 'react';
-import './App.css';
-import PackageResults from './components/packageResults';
-import ParcelsToFind from './components/parcelsToFind';
-import { Button, Form, Table, Input, Alert } from 'reactstrap';
+import React, { Component } from 'react'
+import './App.css'
+import PackageResults from './components/packageResults'
+import ParcelsToFind from './components/parcelsToFind'
+import { Button, Form, Table, Input, Alert } from 'reactstrap'
 export default class App extends Component {
   state = {
     parcelsToFind: [],
     parcelsData: [],
     input: '',
-    errorLength: ''
-  };
+    errorLength: '',
+  }
 
   inputOnChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
+    this.setState({ [e.target.id]: e.target.value })
+  }
 
   addPackageNumber = (e) => {
-    e.preventDefault();
-    let { input, parcelsToFind } = this.state;
+    e.preventDefault()
+    let { input, parcelsToFind } = this.state
 
     if (this.state.input !== '') {
-      let parcelsArray = parcelsToFind;
-      let parseInput = input;
-      parseInput = parseInput.split(',');
+      let parcelsArray = parcelsToFind
+      let parseInput = input
+      parseInput = parseInput.split(',')
       parseInput.forEach((elem) => {
-        parcelsArray.push(elem);
-      });
-      this.setState({
-        parcelToFind: parcelsArray,
-        input: '',
-        errorLength: '',
-      });
+        let newObj = {
+          parcel: elem,
+          id: Math.max(parcelsArray.map((s) => s.id)) + 1,
+        }
+        parcelsArray.push(newObj)
+      })
+      this.setState((state) => {
+        return {
+          parcelToFind: parcelsArray,
+          input: '',
+          errorLength: '',
+        }
+      })
     } else {
       this.setState({
         errorLength: 'Nezadali ste číslo zásielky',
-      });
+      })
     }
-  };
+  }
 
   getPostaResponse = () => {
-    let urlString = 'https://api.posta.sk/private/search?q=';
+    let urlString = 'https://api.posta.sk/private/search?q='
     this.state.parcelsToFind.forEach((element) => {
-      urlString += element + ',';
-    });
-    urlString += '&m=tnt';
+      urlString += element.parcel + ','
+    })
+    urlString += '&m=tnt'
     fetch(urlString)
       .then((data) => data.json())
       .then((response) => {
-        this.setState({
-          parcelsData: response.parcels,
-        });
-        localStorage.setItem('parcels', this.state.parcelsToFind);
-      });
-  };
+        this.setState((state) => {
+          return {
+            parcelsData: response.parcels,
+          }
+        })
+
+        localStorage.setItem('parcels', JSON.stringify(this.state.parcelsToFind))
+      })
+  }
 
   deleteParcelsToFind = () => {
     this.setState({
       parcelsToFind: [],
-      parcelsData: []
-    });
-    localStorage.removeItem('parcels');
-  };
+      parcelsData: [],
+    })
+    localStorage.removeItem('parcels')
+  }
 
   removeOne = (index) => {
-    let parcelsArray = this.state.parcelsToFind;
-    parcelsArray.splice(index, 1);
+    let parcelsArray = this.state.parcelsToFind
+    parcelsArray.splice(index, 1)
     this.setState({
       parcelsToFind: parcelsArray,
-    });
-  };
+    })
+  }
 
   componentDidMount = () => {
-    let storageString = localStorage.getItem('parcels');
+    let storageString = localStorage.getItem('parcels')
 
-    storageString = storageString === null ? [] : storageString.split(',');
-    let parcelsArray = [];
+    storageString = storageString === null ? [] : JSON.parse(storageString)
+    let parcelsArray = []
 
     storageString.forEach((elem) => {
-      parcelsArray.push(elem);
-    });
+      parcelsArray.push(elem)
+    })
 
     this.setState({
       parcelsToFind: parcelsArray,
-    });
-  };
+    })
+  }
 
   render() {
-    const { parcelsToFind, parcelsData, errorLength, checked } = this.state;
-    console.log('App -> render -> checked', checked);
+    const { parcelsToFind, parcelsData, errorLength } = this.state
     return (
       <div className="App">
         <h2>Pošta Tracker</h2>
@@ -106,16 +114,17 @@ export default class App extends Component {
           </Button>
         </Form>
         <hr />
-        <Table size="sm" style={{ textAlign: 'center', maxWidth: '20%' }}>
+        <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
           <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={this.removeOne} />
         </Table>
-        <PackageResults
-          parcelsData={parcelsData}
-          parcelsToFind={parcelsToFind}
-          deleteParcelsToFind={this.deleteParcelsToFind}
-          getPostaResponse={this.getPostaResponse}
-        />
+        {parcelsToFind.length > 0 && (
+          <PackageResults
+            parcelsData={parcelsData}
+            deleteParcelsToFind={this.deleteParcelsToFind}
+            getPostaResponse={this.getPostaResponse}
+          />
+        )}
       </div>
-    );
+    )
   }
 }
