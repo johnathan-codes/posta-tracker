@@ -1,18 +1,13 @@
 import React from 'react'
 import { Badge } from 'reactstrap'
 
-const ParcelsToFind = ({ parcelsToFind, removeOne }) => {
+const ParcelsToFind = ({ parcelsToFind }) => {
   return (
     <tbody>
       {parcelsToFind.map((parcel, index) => {
         return (
           <tr key={index}>
             <td>{parcel.parcel}</td>
-            <td>
-              <Badge color="danger" size="sm" onClick={() => removeOne(index)} href="#">
-                X
-              </Badge>
-            </td>
           </tr>
         )
       })}

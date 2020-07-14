@@ -25,10 +25,12 @@ const App = () => {
         let newObj = {
           parcel: elem,
           id: Math.max(parcelsArray.map((s) => s.id)) + 1,
+          response: '',
         }
         parcelsArray.push(newObj)
       })
 
+      console.log('addPackageNumber -> parcelsArray', parcelsArray)
       setParcelsToFind(parcelsArray)
       setInput('')
       setErrorLength('')
@@ -58,12 +60,9 @@ const App = () => {
     localStorage.removeItem('parcels')
   }
 
-  const removeOne = (index) => {
-    let parcelsArray = parcelsToFind
-    parcelsArray.splice(index, 1)
-
-    setParcelsToFind(parcelsArray)
-  }
+  // const removeOne = (index) => {
+  //   setParcelsToFind((prevParcelsToFind) => [...prevParcelsToFind, parcelsToFind.splice(index, 1)])
+  // }
 
   useEffect(() => {
     let storageString = localStorage.getItem('parcels')
@@ -96,15 +95,18 @@ const App = () => {
         </Button>
       </Form>
       <hr />
-      <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
-        <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={removeOne} />
-      </Table>
-      {parcelsToFind.length > 0 && (
-        <PackageResults
-          parcelsData={parcelsData}
-          deleteParcelsToFind={deleteParcelsToFind}
-          getPostaResponse={getPostaResponse}
-        />
+      {parcelsToFind.length >= 1 && (
+        <div>
+          <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
+            <ParcelsToFind parcelsToFind={parcelsToFind} />
+            {/* <ParcelsToFind parcelsToFind={parcelsToFind}  /> removeOne={removeOne} */}
+          </Table>
+          <PackageResults
+            parcelsData={parcelsData}
+            deleteParcelsToFind={deleteParcelsToFind}
+            getPostaResponse={getPostaResponse}
+          />
+        </div>
       )}
     </div>
   )
