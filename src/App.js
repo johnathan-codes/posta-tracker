@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import PackageResults from './components/PackageResults'
-import ParcelsToFind from './components/ParcelsToFind'
+import PackageResults from './components/packageResults'
+import ParcelsToFind from './components/parcelsToFind'
 import { Button, Form, Table, Input, Alert } from 'reactstrap'
 
 const App = () => {
