@@ -36,9 +36,9 @@ const App = () => {
   }
 
   const formatResponse = (item) => {
-    if (item.events.length > 0 && item.events[item.events.length - 1].post !== undefined) {
+    if (item.events?.length > 0 && item.events[item.events.length - 1].post !== undefined) {
       return 'Zásielka uložená na pošte: ' + item.events[item.events.length - 1].post.name
-    } else if (item.events.length > 0) {
+    } else if (item.events?.length > 0) {
       return item.events[0].desc.sk
     } else return 'Zásielka nenájdená'
   }
