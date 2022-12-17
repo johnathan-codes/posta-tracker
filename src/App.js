@@ -39,25 +39,26 @@ const App = () => {
     if (item.events.length > 0 && item.events[item.events.length - 1].post !== undefined) {
       return 'Zásielka uložená na pošte: ' + item.events[item.events.length - 1].post.name
     } else if (item.events.length > 0) {
-      return item.events[item.events.length - 1].desc.sk
+      return item.events[0].desc.sk
     } else return 'Zásielka nenájdená'
   }
 
   const getPostaResponse = () => {
-    let urlString = 'https://api.posta.sk/private/search?q='
+    let urlString = 'https://api.posta.sk/private/web/track?q='
     parcelsToFind.forEach((element) => {
       urlString += element.parcel + ','
     })
-    urlString += '&m=tnt'
+    urlString += '&mmpc=1'
     fetch(urlString)
       .then((data) => data.json())
       .then((response) => {
         let tempArray = []
         response.parcels.forEach((item) => {
           let temp = parcelsToFind.find((elem) => {
-            return elem.parcel === item.number
+            return elem.parcel === item.barcode
           })
 
+          if (!temp) return
           temp.response = formatResponse(item)
           tempArray.push(temp)
         })
@@ -112,19 +113,20 @@ const App = () => {
           Pridať
         </Button>
       </Form>
-      <hr />
 
       {parcelsToFind.length > 0 && (
-        <div>
+        <div style={{ paddingTop: '20px' }}>
           <Table size="sm" style={{ textAlign: 'center', maxWidth: '50%' }}>
             <ParcelsToFind parcelsToFind={parcelsToFind} removeOne={removeOne} />
           </Table>
-          <Button onClick={deleteParcelsToFind} color="danger" size="sm">
-            Vymazať zásielky
-          </Button>
-          <Button onClick={getPostaResponse} color="primary" size="sm">
-            Vyhľadať zásielky
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'center', columnGap: '15px' }}>
+            <Button onClick={deleteParcelsToFind} color="danger" size="sm">
+              Vymazať zásielky
+            </Button>
+            <Button onClick={getPostaResponse} color="primary" size="sm">
+              Vyhľadať zásielky
+            </Button>
+          </div>
           {checked && <PackageResults parcelsData={parcelsToFind} />}
         </div>
       )}
